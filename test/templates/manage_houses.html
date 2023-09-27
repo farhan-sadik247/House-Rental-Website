@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+<div class='container mt-4' style='width: 800px'>
+    <div class="row p-2">
+    </div>
+    <div class='col d-flex justify-content-center'>
+        <div class='row w-100'>
+            <div class="cart-container">
+                <div class="card">
+                    <div class="card-header" align="center">
+                        Your Houses
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        {% for item in houses %}
+                            <li class="list-group-item w-100">
+                                <div class='row w-100'>
+                                    <div class="col-lg-3">
+                                        <img src="{{item.pic.url}}" class='img object-fit-cover border-0 rounded' style="height: 100px; width: 100px">
+                                    </div>
+                                    <div class="col-lg">
+                                        <h5><a class='text-decoration-none' href="{% url 'house' house_id=item.pk %}">{{ item.location }}</a></h5>
+                                        <h6>Price: {{ item.price }} TK</h6>
+                                    </div>
+                                    <div class="col-lg-2 d-flex align-items-center justify-content-end">
+                                        <a href="{% url 'update_house' house_id=item.id %}" type="button" class="btn btn-primary btn-sm" aria-label="Close">Edit</a>
+                                        <div class='p-1'></div>
+                                        <form method='POST' class='d-flex'>
+                                            {% csrf_token %}
+                                            <input type='hidden' name='house_id' value='{{ item.id }}'>
+                                            <button type="submit" class="btn btn-sm btn-danger" name='remove' aria-label="Close">Delete</button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class='container position-absolute top-50 start-50 translate-middle bg-light text-dark rounded shadow p-3 mb-5 bg-body-tertiary rounded'>
+    <div class='d-flex flex-row'>
+        <div class='col-md-4'>
+            <img src='{{ product.pic.url }}' class='w-100' style='max-height:500px'>
+        </div>
+        <div class=' d-flex flex-column mb-3 px-4 justify-content-between'>
+            <div>
+                <h2>{{ product.title }}</h2>
+                <div class="alert alert-success" role="alert">
+                    <h4>Basic Informations</h4>
+                  </div>
+                <div class="container text-center border border-rounded border-2 p-3 my-3">
+                    <div class="row gap-0">
+                        <div class="col">
+                            <span class="material-symbols-outlined">night_shelter</span>
+                            <span class='fw-medium'> Bedroom: </span> {{ product.bedroom_no }}
+                            
+                        </div>
+                        <div class="vr p-0"></div>
+                        <div class="col">
+                            <span class="material-symbols-outlined">bathtub</span>
+                            <span class='fw-medium'> Bathroom: </span> {{ product.bathroom_no }}
+                        </div>
+                        
+                        <div class="vr p-0" ></div>
+                        <div class="col">
+
+                            <span class='fw-medium'> Flat/room Size: </span> {{ product.flat_size }}(sq.ft)
+                        </div>
+                    </div>
+                </div>  
+                <div class="container text-center border border-rounded border-2 p-3 my-3">
+                    <div class="row gap-0">
+                        <div class="col">
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <span class='fw-medium' > Location: </span><br> {{ product.location }}
+                            
+                        </div>
+                        <div class="vr p-0"></div>
+                        <div class="col">
+                            <i class="bi bi-buildings-fill"></i>
+                            <span class='fw-medium'> Flat Type: </span><br> {{ product.type }}
+                        </div>
+                        
+                        <div class="vr p-0" ></div>
+                        <div class="col">
+                            <i class="bi bi-gender-ambiguous"></i>
+                            <span class='fw-medium'> Gender: </span> <br>{{ product.gender }}
+                        </div>
+                    </div>
+                </div> 
+                <p>{{ product.details }}</p>
+            </div>
+
+            <div>
+                <h3>Price: {{ product.price }}Tk</h3>
+                <h5 class = 'text-primary-emphasis'>Available From: {{ product.rent_date}}</h5>
+                <h5 class = 'text-primary-emphasis'>Contact Number: {{ product.manush.phone}}</h5>
+                {% if user.is_authenticated %}
+                    {% if not in_cart %}
+                        
+                            <form method="POST" class="add-to-cart-form" action="{% url 'add_bookmark' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="house_pk" value="{{ product.pk }}">
+                                <button type="submit" class="btn btn-primary">Add to Cart</button>
+                            </form>
+                    {% else %}
+                        <div class="alert alert-success text-center" role="alert">
+                            Item added to cart
+                        </div>
+                    {% endif %}
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- This is AJAX request which can do POST and GET requests without reloading the page. -->
+{% comment %} <script>
+    $(document).ready(function() {
+        $('.add-to-cart-form').submit(function(event) {
+            event.preventDefault(); // prevent the default form submission behavior
+            var $form = $(this); // get a reference to the form element
+            $.ajax({
+                method: 'POST',
+                data: $form.serialize(),    // serialize means it takes the form data and converts to a encoded string i.e: name=John+Doe&email=john.doe@example.com
+                success: function(response) {
+                    console.log(response); // log the response to the console
+                },
+                error: function(response) {
+                    console.log(response); // log the error to the console
+                }
+            });
+        });
+    });
+</script> {% endcomment %}
+{% endblock content %}

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class='container py-5'>
+
+    <h2>Popular Properties</h2>
+    <div class="row">
+        {% for product in Houses %}
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-3" style="height: 250px; width:250px">
+            <div class="card h-100 bg-light text-dark border-0 shadow-sm">
+                <img src="{{ product.pic.url }}" class="card-img-top img-fluid object-fit-cover" style="height: 150px; width: auto" alt="...">
+                <div class="card-body">
+                    {% if product.type == product.FAMILY %}
+                        <span class='text-secondary'>Family</span>
+                    {% elif product.type == product.SUBLET %}
+                        <span class='text-secondary'>Sublet</span>
+                    {% elif product.type == product.BACHELOR %}
+                        <span class='text-secondary'>Bachelor</span>
+                    
+                    
+                    {% endif %}
+                    <h5 class="card-title"><a class="text-decoration-none" href="{% url 'house' house_id=product.pk%}">{{ product }}</h5></a>
+                    <h6 class="float-end w-100">{{ product.price }}TK</h6>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% comment %} <div class="col-sm-6 col-md-4 col-lg-3 mb-3" style="height: 250px; width:250px">
+            <div class="card h-100 bg-light text-dark border-0 shadow-sm">
+                <a href="" class=" position-absolute top-50 start-50 translate-middle"><i class="bi bi-arrow-right" style="font-size: 100px"></i><a>
+                <div class="card-body">
+                    <h5 align="center" class="card-title"><a class="text-decoration-none" href="#">Show More</h5></a>
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock title %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-aFq/bzH65dt+w6FI2ooMVUpc+21e0SRygnTpmBvdBgSdnuTN7QbdgL+OapgHtvPp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.4/font/bootstrap-icons.css">
+
+    <style>
+        {% comment %} .carousel-item img {
+            height: 400px;
+            object-fit: cover;
+        } {% endcomment %}
+
+        #page-container {
+        position: relative;
+        min-height: 100vh;
+        }
+
+    </style>
+
+  </head>
+  <body style="background-color: powderblue ">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark sticky-top shadow" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">ToLet Dhaka</a>
+            
+            <!-- Search Bar -->
+            <ul class="navbar-nav w-100 justify-content-center">
+                <li class="nav-item">
+                    <button class="btn btn-outline-light d-flex" style="width: 300px" data-bs-toggle="modal" data-bs-target="#search"><span class = 'text-center w-100'>Find Your Home</span></button>
+                </li>
+            </ul>
+
+
+            <!-- Toggle Button -->
+            <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Right Side -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    
+                    <!-- Add property button -->
+                    {% if user.is_authenticated  %}
+                    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-house-gear-fill"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'add_house' manush_id=request.user.pk %}">Add Property</a></li>
+                            <li><a class="dropdown-item" href="{% url 'manage_houses' %}">Manage Property</a></li>
+                        </ul>
+                    </li>
+
+                    {% endif %}
+                    
+                    <!-- Create property Button -->
+                    {% if user.is_authenticated and user.is_seller == False %}
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="">Create Shop</a>
+                    </li>
+                    {% endif %}
+                    
+                    
+                    {% if user.is_authenticated %}
+
+                    <!-- Cart -->
+                    <li class="nav-item">
+                        <a class='nav-link position-relative' href="{% url 'bookmark' %}">
+                            {% if request.user.cart.num_items > 0 %}
+                                <span class="position-absolute top-200 start-100 translate-middle badge rounded-pill bg-danger" id='cart_item_count'>{{request.user.cart.num_items}}</span>
+                            {% endif %}
+                            <i class="bi bi-house-heart-fill"></i>
+                        </a>
+                    </li>
+
+                    <!-- User Profile Icon -->
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <button class="btn btn-link dropdown-toggle rounded-circle text-white" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="text-decoration:none; color:inherit;"  >
+                                {% if request.user.pic %}
+                            
+                                    <img src="{{request.user.pic.url}}" alt="User Profile Image" class="rounded-circle border-0 object-fit-cover" width="30" height="30">
+                                {% else %}
+                                    <i class="bi bi-person-fill"></i>
+                                {% endif %}
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'bookmark' %}">Your Cart</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'update_profile' %}">Update Profile</a></li>
+                                <li><a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal" href="">Logout</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                    <a class="btn btn-light me-2" href="{% url 'login' %}">Login</a>
+                    {% endif %}
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Warning!</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Are you sure you want to logout?
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <a href="{% url 'logout' %}"><button type="button" class="btn btn-danger">Yes, Logout</button></a>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="modal fade" id="search" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Search</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" enctype="multipart/form-data" action={% url 'findHome' %}> 
+                    {% csrf_token %}
+                    {% comment %} {{ form.as_p }} {% endcomment %}
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control" name="location"> 
+
+                    <label class="form-label">Minimum Rent</label>
+                    <input type="number" class="form-control" name="price1"> 
+
+                    <label class="form-label">Maximum Rent</label>
+                    <input type="number" class="form-control" name="price2"> 
+
+                    <label class="form-label">Gender</label>
+                    <input type="text" class="form-control" name="gender">
+                    <br>
+                    <label class="form-label">Type</label>
+                    <select name = 'type'> 
+                        <option>  </option>    
+                        <option value='family'> Family </option>    
+                        <option value='bachelor'> Bachelor </option>    
+                        <option value = 'sublet'> Sublet </option>    
+                    </select>
+                    <button type="submit" class="btn btn-primary rounded-pill w-100">Find</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </div>
+    </div>
+
+
+    <div id="page-container">
+        <div id="content-wrap">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{message.tags}}{% endif %} alert-dismissible fade show" role="alert">{{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}
+    
+            {% endblock content %}
+        </div>
+    </div>
+
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js" integrity="sha384-qKXV1j0HvMUeCBQ+QVp7JcfGl760yU08IQ+GpUo5hlbpg51QRiuqHAJz8+BrxE/N" crossorigin="anonymous"></script>
+  </body>
+<!-- Footer -->
+<footer id='footer' class=" text-center text-white" style="background-color:#2b3035;">
+    <!-- Grid container -->
+    <div class="container p-2">
+    
+
+      <!-- Section: Text -->
+      <div class="mb-2">
+        <p>
+          House Rental Website for university project.
+        </p>
+    </div>
+  
+    </div>
+
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      © 2023 Copyright - 
+      <a class="text-white text-decoration-none">Team Rebooters</a>
+      <br><a class="text-white text-decoration-none">Sadik and Naveed Co.</a></br>
+    </div>
+    <!-- Copyright -->
+  
+  </footer>
+</html>
